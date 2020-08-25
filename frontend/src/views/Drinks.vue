@@ -26,6 +26,7 @@
         <th>Name</th>
         <th>Description</th>
         <th>Rating</th>
+        <th>Remove</th>
       </tr>
       </thead>
       <tbody>
@@ -33,6 +34,9 @@
         <td>{{ drink.name }}</td>
         <td>{{ drink.description }}</td>
         <td>{{ drink.rating }}/10</td>
+        <td>
+          <button @click="removeDrink(drink)">-</button>
+        </td>
       </tr>
       </tbody>
     </table>
@@ -50,13 +54,16 @@ export default {
   methods: {
     getDrinks() {
       const jwt = this.$cookies.get('jwt_token');
+      const DRINKS_API_URL = `${BASE_API_URL}/drinks/`;
       const config = {
         headers: {
           Authorization: `Bearer ${jwt}`,
         },
       };
 
-      axios.get(`${BASE_API_URL}/drinks/`, config).then((response) => {
+      const getData = axios.get(`${DRINKS_API_URL}`, config);
+      alert(getData);
+      getData.then((response) => {
         this.drinks = response.data;
       });
     },
@@ -68,10 +75,12 @@ export default {
         rating: this.new_rating,
       };
       const csrf = this.$cookies.get('csrftoken');
+      const jwt = this.$cookies.get('jwt_token');
 
       const config = {
         headers: {
           'X-CSRFToken': csrf,
+          Authorization: `Bearer ${jwt}`,
         },
       };
       axios.post(`${BASE_API_URL}/drinks/`, requestData, config).then(() => {
@@ -80,6 +89,18 @@ export default {
       this.new_name = '';
       this.new_description = '';
       this.new_rating = '';
+    },
+    removeDrink(drink) {
+      const jwt = this.$cookies.get('jwt_token');
+      const config = {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      };
+      const { id } = drink;
+      axios.delete(`${BASE_API_URL}/drinks/${id}`, config).then(() => {
+        this.getDrinks();
+      });
     },
   },
   data() {
