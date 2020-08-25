@@ -49,7 +49,14 @@ export default {
   components: {},
   methods: {
     getDrinks() {
-      axios.get(`${BASE_API_URL}/drinks/`).then((response) => {
+      const jwt = this.$cookies.get('jwt_token');
+      const config = {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      };
+
+      axios.get(`${BASE_API_URL}/drinks/`, config).then((response) => {
         this.drinks = response.data;
       });
     },

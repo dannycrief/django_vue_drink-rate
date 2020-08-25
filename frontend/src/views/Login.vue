@@ -19,6 +19,7 @@
 import axios from 'axios';
 
 const AUTH_URL = '/api/token/';
+
 export default {
   data() {
     return {
@@ -41,7 +42,7 @@ export default {
       axios.post(AUTH_URL, requestData, config)
         .then((response) => {
           this.$cookies.set('jwt_token', response.data.access);
-          console.log(response.data.access);
+          console.log(`SHIT IS ${response.data.access}`);
           console.log('Token set');
         });
       this.username = '';
